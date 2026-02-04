@@ -1,0 +1,8 @@
+{
+  "name": "LensFlow - Creative Studio Manager",
+  "description": "نظام ذكي لإدارة المشاريع والشؤون المالية للمصورين والمونتيرين، مدعوم بالذكاء الاصطناعي لتحليل الأداء.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
