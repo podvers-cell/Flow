@@ -54,7 +54,8 @@ import {
   Search,
   FileText,
   Printer,
-  Download
+  Download,
+  Menu
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import type { StorageService } from './services/firestoreService';
@@ -239,6 +240,7 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportModalData, setReportModalData] = useState<{ title: string; bodyContent: string; reportStyles: string; downloadFilename: string } | null>(null);
   const [notificationFocusProjectId, setNotificationFocusProjectId] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [localUsersVersion, setLocalUsersVersion] = useState(0);
   const [newUserUsername, setNewUserUsername] = useState('');
   const [newUserPassword, setNewUserPassword] = useState('');
@@ -1556,23 +1558,32 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
 
   return (
     <div className="min-h-screen">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={onLogout} studioName={userSettings.studioName} studioImageUrl={userSettings.studioImageUrl || undefined} hideSettings={isStaff} />
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={onLogout} studioName={userSettings.studioName} studioImageUrl={userSettings.studioImageUrl || undefined} hideSettings={isStaff} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <main className="mr-64 p-8 lg:p-12 transition-all duration-300">
-        <header className="glass-header relative z-50 flex justify-between items-center mb-12 rounded-2xl px-8 py-6 -mx-2 lg:-mx-4">
-          <div className="animate-slide-in-right flex flex-col gap-4">
-            {userSettings.studioImageUrl && activeTab !== 'settings' && (
-              <img src={userSettings.studioImageUrl} alt="" className="w-16 h-16 rounded-2xl object-cover border-2 border-white/60 shadow-md" />
-            )}
-            <div>
-              <h2 className="text-[42px] font-black text-slate-900 tracking-tight leading-none">
+      <main className="mr-0 md:mr-64 p-4 sm:p-6 md:p-8 lg:p-12 transition-all duration-300 pb-24 md:pb-12">
+        <header className="glass-header relative z-50 flex flex-wrap justify-between items-start gap-4 mb-6 md:mb-12 rounded-2xl px-4 sm:px-6 md:px-8 py-4 md:py-6 -mx-2 lg:-mx-4">
+          <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(true)}
+              className="md:hidden p-3 glass-card rounded-2xl text-slate-600 hover:text-indigo-600 transition-all touch-manipulation min-h-[48px] min-w-[48px] flex items-center justify-center"
+              aria-label="فتح القائمة"
+            >
+              <Menu size={24} />
+            </button>
+            <div className="animate-slide-in-right flex flex-col gap-2 md:gap-4 min-w-0 flex-1">
+              {userSettings.studioImageUrl && activeTab !== 'settings' && (
+                <img src={userSettings.studioImageUrl} alt="" className="w-12 h-12 md:w-16 md:h-16 rounded-2xl object-cover border-2 border-white/60 shadow-md shrink-0" />
+              )}
+              <div className="min-w-0">
+                <h2 className="text-2xl sm:text-3xl md:text-[42px] font-black text-slate-900 tracking-tight leading-tight">
                 {activeTab === 'dashboard' && userSettings.studioName}
                 {activeTab === 'projects' && 'المشاريع'}
                 {activeTab === 'finances' && 'المالية والحسابات'}
                 {activeTab === 'assets' && 'الأصول'}
                 {activeTab === 'settings' && 'الإعدادات والتحكم'}
               </h2>
-              <p className="text-slate-500 mt-4 font-black text-xl opacity-80 min-h-[2.5rem] flex items-center">
+              <p className="text-slate-500 mt-2 md:mt-4 font-black text-sm sm:text-base md:text-xl opacity-80 min-h-[2rem] md:min-h-[2.5rem] flex items-center">
                 {activeTab === 'dashboard' && (
                   <>
                     <span>{WELCOME_TEXT.slice(0, welcomeTypingIndex)}</span>
@@ -1589,11 +1600,11 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
             </div>
           </div>
           
-          <div className="relative z-[100] flex items-center gap-4">
+          <div className="relative z-[100] flex items-center gap-2 sm:gap-4 shrink-0">
             <button
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); openReportModal(); }}
-              className="p-4 glass-card rounded-2xl text-slate-500 hover:text-indigo-600 transition-all flex items-center gap-2 cursor-pointer"
+              className="p-3 md:p-4 glass-card rounded-2xl text-slate-500 hover:text-indigo-600 transition-all flex items-center gap-2 cursor-pointer touch-manipulation min-h-[48px]"
               title={reportButtonLabel}
               aria-label={reportButtonLabel}
             >
@@ -1603,7 +1614,7 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
             <div ref={notificationsAreaRef} className="relative">
               <button 
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-4 glass-card rounded-2xl text-slate-500 hover:text-indigo-600 transition-all relative"
+                className="p-3 md:p-4 glass-card rounded-2xl text-slate-500 hover:text-indigo-600 transition-all relative touch-manipulation min-h-[48px] min-w-[48px] flex items-center justify-center"
               >
                 <Bell size={24} />
                 {stats.unreadNotifications > 0 && (
@@ -1614,7 +1625,7 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
               </button>
 
               {showNotifications && (
-                <div className="glass-dropdown absolute left-0 mt-3 w-80 rounded-2xl z-[9999] overflow-hidden animate-scale-in top-full shadow-2xl ring-2 ring-white/50">
+                <div className="glass-dropdown absolute left-0 mt-3 w-80 max-w-[calc(100vw-2rem)] rounded-2xl z-[9999] overflow-hidden animate-scale-in top-full shadow-2xl ring-2 ring-white/50">
                 <div className="p-5 border-b border-white/40 flex justify-between items-center">
                   <h4 className="font-medium text-slate-800">تنبيهات المواعيد</h4>
                   <button onClick={() => setShowNotifications(false)}><X size={16} className="text-slate-400" /></button>

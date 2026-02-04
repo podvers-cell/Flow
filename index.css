@@ -16,6 +16,9 @@ body {
   font-weight: 500;
   background: linear-gradient(160deg, #f1f5f9 0%, #e2e8f0 35%, #f8fafc 70%, #f1f5f9 100%);
   min-height: 100vh;
+  min-height: -webkit-fill-available;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* كل النصوص بالعربي Medium */
@@ -110,3 +113,10 @@ body {
 .stagger-4 { animation-delay: 0.2s; }
 .stagger-5 { animation-delay: 0.25s; }
 .stagger-6 { animation-delay: 0.3s; }
+
+/* توافق الموبايل — منع تكبير iOS عند التركيز على الحقول */
+@media (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}

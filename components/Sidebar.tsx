@@ -19,9 +19,13 @@ interface SidebarProps {
   studioImageUrl?: string;
   /** إخفاء تبويب الإعدادات (مثلاً لحساب Staff) */
   hideSettings?: boolean;
+  /** على الموبايل: هل الدرج مفتوح (للتحكم من الخارج) */
+  isOpen?: boolean;
+  /** على الموبايل: إغلاق الدرج بعد التنقل أو النقر على الخلفية */
+  onClose?: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, studioName, studioImageUrl, hideSettings }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, studioName, studioImageUrl, hideSettings, isOpen = true, onClose }) => {
   const allItems = [
     { id: 'dashboard', label: 'لوحة التحكم', icon: LayoutDashboard },
     { id: 'projects', label: 'المشاريع', icon: Camera },
@@ -31,8 +35,25 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, st
   ];
   const menuItems = hideSettings ? allItems.filter((item) => item.id !== 'settings') : allItems;
 
+  const handleNav = (tab: string) => {
+    setActiveTab(tab);
+    onClose?.();
+  };
+
   return (
-    <div className="w-64 glass-sidebar text-white h-screen fixed right-0 top-0 flex flex-col">
+    <>
+      {onClose && (
+        <div
+          className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 md:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+          onClick={onClose}
+          aria-hidden
+        />
+      )}
+      <aside
+        className={`w-64 max-w-[85vw] glass-sidebar text-white h-screen fixed right-0 top-0 flex flex-col z-50 transition-transform duration-300 ease-out ${
+          isOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'
+        }`}
+      >
       <div className="p-6 border-b border-white/10 flex flex-col items-center gap-3">
         {studioImageUrl && (
           <img src={studioImageUrl} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-white/20 shadow-lg" />
@@ -51,8 +72,9 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, st
           return (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 active:scale-[0.98] ${
+              type="button"
+              onClick={() => handleNav(item.id)}
+              className={`w-full flex items-center gap-3 px-4 py-3.5 min-h-[48px] rounded-2xl transition-all duration-200 active:scale-[0.98] touch-manipulation ${
                 activeTab === item.id
                   ? 'bg-white/20 text-white shadow-lg shadow-black/5'
                   : 'text-white/70 hover:bg-white/10 hover:text-white hover:scale-[1.02]'
@@ -72,13 +94,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, st
             await authService.logout();
             onLogout?.();
           }}
-          className="w-full flex items-center gap-3 px-4 py-3 text-white/60 hover:text-white hover:bg-white/10 rounded-2xl transition-all duration-200 active:scale-[0.98]"
+          className="w-full flex items-center gap-3 px-4 py-3.5 min-h-[48px] text-white/60 hover:text-white hover:bg-white/10 rounded-2xl transition-all duration-200 active:scale-[0.98] touch-manipulation"
         >
           <LogOut size={20} />
           <span className="font-medium">تسجيل الخروج</span>
         </button>
       </div>
-    </div>
+    </aside>
+    </>
   );
 };
 
