@@ -40,29 +40,22 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, st
     onClose?.();
   };
 
+  // على الموبايل يُستخدم BottomNav بدلاً من القائمة الجانبية
+
   return (
     <>
-      {onClose && (
-        <div
-          className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 md:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-          onClick={onClose}
-          aria-hidden
-        />
-      )}
       <aside
-        className={`w-64 max-w-[85vw] glass-sidebar text-white h-screen fixed right-0 top-0 flex flex-col z-50 transition-transform duration-300 ease-out ${
-          isOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'
-        }`}
+        className={`w-64 glass-sidebar text-white h-screen fixed right-0 top-0 z-50 hidden md:flex flex-col transition-transform duration-150 ease-out translate-x-0`}
       >
-      <div className="p-6 border-b border-white/10 flex flex-col items-center gap-3">
+      <div className="p-4 sm:p-6 border-b border-white/10 flex flex-col items-center gap-3 min-h-0">
         {studioImageUrl && (
-          <img src={studioImageUrl} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-white/20 shadow-lg" />
+          <img src={studioImageUrl} alt="" className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl object-cover border-2 border-white/20 shadow-lg shrink-0" />
         )}
-        <div className="text-center">
-          <h1 className="text-xl font-medium text-white/95 truncate max-w-full px-1" title={studioName || 'LensFlow'}>
+        <div className="text-center min-w-0 w-full px-2">
+          <h1 className="text-lg sm:text-xl font-medium text-white/95 leading-snug py-0.5 break-words overflow-visible" title={studioName || 'LensFlow'}>
             {studioName?.trim() || 'LensFlow'}
           </h1>
-          <p className="text-xs text-white/60 mt-1">مدير الإبداع الذكي</p>
+          <p className="text-xs text-white/60 mt-1 leading-relaxed">مدير الإبداع الذكي</p>
         </div>
       </div>
 

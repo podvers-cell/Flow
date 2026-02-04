@@ -31,14 +31,15 @@ const Toast: React.FC<ToastProps> = ({ message, type = 'success', onClose, durat
   return (
     <div
       role="alert"
-      className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-3 px-5 py-4 rounded-2xl shadow-xl border backdrop-blur-sm animate-toast-in ${styles[type]}`}
+      className={`fixed left-1/2 -translate-x-1/2 z-[200] flex items-center gap-3 px-4 py-3 sm:px-5 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl border backdrop-blur-sm animate-toast-in max-w-[calc(100vw-2rem)] w-max min-w-0 ${styles[type]}`}
+      style={{ bottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
     >
       {icons[type]}
-      <span className="font-medium text-sm">{message}</span>
+      <span className="font-medium text-sm truncate flex-1 min-w-0">{message}</span>
       <button
         type="button"
         onClick={onClose}
-        className="mr-1 p-1 rounded-lg hover:bg-white/20 transition-colors"
+        className="mr-1 p-2 rounded-lg hover:bg-white/20 transition-colors touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center shrink-0"
         aria-label="إغلاق"
       >
         <X size={18} />

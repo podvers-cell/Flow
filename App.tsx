@@ -1,6 +1,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Sidebar from './components/Sidebar';
+import BottomNav from './components/BottomNav';
 import StatCard from './components/StatCard';
 import Toast from './components/Toast';
 import { 
@@ -54,8 +55,7 @@ import {
   Search,
   FileText,
   Printer,
-  Download,
-  Menu
+  Download
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import type { StorageService } from './services/firestoreService';
@@ -76,16 +76,16 @@ function parseAmountFromInput(value: string): number {
 // --- المكونات الفرعية المستقرة ---
 
 const Modal = ({ title, subtitle, children, onClose }: { title: string; subtitle?: string; children?: React.ReactNode; onClose: () => void }) => (
-  <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in" onClick={(e) => e.target === e.currentTarget && onClose()}>
-    <div className="glass-modal rounded-[28px] w-full max-w-md overflow-hidden animate-scale-in" onClick={(e) => e.stopPropagation()}>
-      <div className="p-6 pb-4 flex justify-between items-start gap-4 border-b border-white/40">
-        <div>
-          <h3 className="text-xl text-slate-800 font-medium">{title}</h3>
-          {subtitle && <p className="text-slate-500 text-sm mt-1">{subtitle}</p>}
+  <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in overflow-y-auto" onClick={(e) => e.target === e.currentTarget && onClose()}>
+    <div className="glass-modal rounded-2xl sm:rounded-[28px] w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md overflow-hidden animate-scale-in my-auto" onClick={(e) => e.stopPropagation()}>
+      <div className="p-4 sm:p-6 pb-3 sm:pb-4 flex justify-between items-start gap-3 border-b border-white/40">
+        <div className="min-w-0">
+          <h3 className="text-lg sm:text-xl text-slate-800 font-medium">{title}</h3>
+          {subtitle && <p className="text-slate-500 text-xs sm:text-sm mt-1">{subtitle}</p>}
         </div>
-        <button onClick={onClose} className="text-slate-400 hover:text-slate-600 hover:bg-white/50 p-2 rounded-xl transition-all shrink-0" aria-label="إغلاق"><X size={20} /></button>
+        <button onClick={onClose} className="text-slate-400 hover:text-slate-600 hover:bg-white/50 p-2.5 rounded-xl transition-all shrink-0 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="إغلاق"><X size={20} /></button>
       </div>
-      <div className="p-6 pt-4 max-h-[85vh] overflow-y-auto custom-scrollbar">
+      <div className="p-4 sm:p-6 pt-3 sm:pt-4 max-h-[75vh] sm:max-h-[85vh] overflow-y-auto custom-scrollbar">
         {children}
       </div>
     </div>
@@ -1094,18 +1094,18 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
   }
 
   const renderDashboard = () => (
-    <div className="space-y-8 animate-fade-in">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="space-y-5 sm:space-y-6 md:space-y-8 animate-fade-in">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
         <StatCard staggerIndex={0} label="إجمالي الدخل" value={`${stats.totalIncome} د.إ`} icon={TrendingUp} color="bg-emerald-500" />
         <StatCard staggerIndex={1} label="إجمالي المصاريف" value={`${stats.totalExpenses} د.إ`} icon={TrendingDown} color="bg-rose-500" />
         <StatCard staggerIndex={2} label="صافي الربح" value={`${stats.netProfit} د.إ`} icon={CheckCircle} color="bg-indigo-500" />
         <StatCard staggerIndex={3} label="مشاريع نشطة" value={stats.active} icon={Clock} color="bg-amber-500" />
       </div>
 
-      <div className="grid grid-cols-1 gap-8">
-        <div className="glass-card p-6 rounded-2xl min-w-0">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-medium text-slate-800 flex items-center gap-2 text-lg">
+      <div className="grid grid-cols-1 gap-5 md:gap-8">
+        <div className="glass-card p-4 sm:p-5 md:p-6 rounded-2xl min-w-0">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 md:mb-6">
+            <h3 className="font-medium text-slate-800 flex items-center gap-2 text-base sm:text-lg">
               <TrendingUp size={22} className="text-indigo-500" />
               تحليل الأداء المالي
             </h3>
@@ -1114,7 +1114,7 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
               IndexedDB
             </div>
           </div>
-          <div className="h-64 w-full relative">
+          <div className="h-56 sm:h-64 w-full relative min-h-[200px]">
             <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <BarChart data={[
                 { name: 'إيرادات', value: stats.totalIncome },
@@ -1136,19 +1136,20 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
         </div>
       </div>
 
-      <div className="glass-card p-8 rounded-3xl flex flex-wrap justify-between items-center gap-6 border-white/50">
-        <div className="flex items-center gap-6 text-slate-700">
-           <div className="bg-indigo-500/10 p-4 rounded-2xl border border-indigo-500/20">
-              <Layers size={32} className="text-indigo-500" />
+      <div className="glass-card p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl flex flex-col sm:flex-row flex-wrap justify-between items-stretch sm:items-center gap-4 md:gap-6 border-white/50">
+        <div className="flex items-center gap-4 sm:gap-6 text-slate-700 min-w-0">
+           <div className="bg-indigo-500/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-indigo-500/20 shrink-0">
+              <Layers size={28} className="sm:w-8 sm:h-8 text-indigo-500" />
            </div>
-           <div>
-              <p className="font-medium text-lg">نظام الإدارة المهيكلة</p>
-              <p className="text-sm text-slate-500 mt-0.5">كل بياناتك محفوظة محلياً وتعمل بدون إنترنت.</p>
+           <div className="min-w-0">
+              <p className="font-medium text-base sm:text-lg">نظام الإدارة المهيكلة</p>
+              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">كل بياناتك محفوظة محلياً وتعمل بدون إنترنت.</p>
            </div>
         </div>
         <button
+          type="button"
           onClick={() => setActiveTab('settings')}
-          className="flex items-center gap-2 bg-white/80 backdrop-blur border border-slate-200/80 px-6 py-3 rounded-2xl text-sm font-medium text-indigo-600 hover:bg-white transition-all shadow-sm active:scale-[0.98]"
+          className="flex items-center justify-center gap-2 bg-white/80 backdrop-blur border border-slate-200/80 px-5 py-3.5 rounded-2xl text-sm font-medium text-indigo-600 hover:bg-white transition-all shadow-sm active:scale-[0.98] touch-manipulation min-h-[48px]"
         >
           <Settings size={18} />
           تخصيص النظام
@@ -1158,12 +1159,12 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
   );
 
   const renderProjects = () => (
-    <div className="glass-card rounded-3xl overflow-hidden animate-slide-in-bottom">
-      <div className="p-8 border-b border-white/40 flex flex-wrap justify-between items-center gap-6">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-medium text-slate-800">سجل المشاريع</h2>
-          <div className="flex flex-wrap items-center gap-3 mt-3">
-             <div className="relative flex-1 min-w-[200px] max-w-md">
+    <div className="glass-card rounded-2xl sm:rounded-3xl overflow-hidden animate-slide-in-bottom">
+      <div className="p-4 sm:p-6 md:p-8 border-b border-white/40 flex flex-col sm:flex-row flex-wrap justify-between items-stretch gap-4 md:gap-6">
+        <div className="flex-1 min-w-0 space-y-3">
+          <h2 className="text-xl sm:text-2xl font-medium text-slate-800">سجل المشاريع</h2>
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
+             <div className="relative flex-1 min-w-0 w-full sm:min-w-[200px] sm:max-w-md">
                <Search size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                <input
                  type="text"
@@ -1173,9 +1174,9 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
                  className="w-full pr-10 pl-4 py-2.5 text-sm font-medium text-slate-700 bg-white/60 border border-slate-200/80 rounded-xl outline-none focus:ring-2 focus:ring-indigo-300 transition-all placeholder:text-slate-400"
                />
              </div>
-             <Filter size={16} className="text-slate-500 shrink-0" />
+             <Filter size={16} className="text-slate-500 shrink-0 hidden sm:block" />
              <select 
-                className="text-sm font-medium text-slate-700 bg-white/60 border border-slate-200/80 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300 transition-all cursor-pointer"
+                className="text-sm font-medium text-slate-700 bg-white/60 border border-slate-200/80 rounded-xl px-4 py-2.5 sm:py-2 outline-none focus:ring-2 focus:ring-indigo-300 transition-all cursor-pointer touch-manipulation min-h-[44px] sm:min-h-0"
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
              >
@@ -1188,34 +1189,35 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
           </div>
         </div>
         <button 
+          type="button"
           onClick={() => setShowProjectModal(true)}
-          className="flex items-center gap-3 bg-indigo-600 text-white px-7 py-3.5 rounded-2xl text-[15px] font-medium hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/25 active:scale-[0.98] shrink-0"
+          className="flex items-center justify-center gap-2 sm:gap-3 bg-indigo-600 text-white px-5 sm:px-7 py-3.5 rounded-2xl text-sm sm:text-[15px] font-medium hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/25 active:scale-[0.98] shrink-0 touch-manipulation min-h-[48px] w-full sm:w-auto"
         >
           <Plus size={22} />
           مشروع إبداعي جديد
         </button>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-right">
-          <thead className="bg-white/50 text-slate-500 text-[13px] uppercase tracking-wider font-medium backdrop-blur-sm">
+      <div className="overflow-x-auto -mx-2 sm:mx-0">
+        <table className="w-full text-right min-w-[640px]">
+          <thead className="bg-white/50 text-slate-500 text-xs sm:text-[13px] uppercase tracking-wider font-medium backdrop-blur-sm">
             <tr>
-              <th className="px-8 py-5">المشروع / العميل</th>
-              <th className="px-8 py-5">الميزانية الكلية</th>
-              <th className="px-8 py-5">المدفوع / المتبقي</th>
-              <th className="px-8 py-5">الموعد</th>
-              <th className="px-8 py-5">الحالة</th>
-              <th className="px-8 py-5 text-center">أدوات</th>
+              <th className="px-4 sm:px-6 md:px-8 py-3 sm:py-5">المشروع / العميل</th>
+              <th className="px-4 sm:px-6 md:px-8 py-3 sm:py-5">الميزانية الكلية</th>
+              <th className="px-4 sm:px-6 md:px-8 py-3 sm:py-5">المدفوع / المتبقي</th>
+              <th className="px-4 sm:px-6 md:px-8 py-3 sm:py-5">الموعد</th>
+              <th className="px-4 sm:px-6 md:px-8 py-3 sm:py-5">الحالة</th>
+              <th className="px-4 sm:px-6 md:px-8 py-3 sm:py-5 text-center">أدوات</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 text-[15px]">
+          <tbody className="divide-y divide-slate-100 text-sm sm:text-[15px]">
             {filteredProjects.length === 0 ? (
-              <tr><td colSpan={6} className="px-8 py-16 text-center text-slate-400 font-black text-lg">{projects.length === 0 ? 'لا توجد سجلات حالياً.' : 'لا توجد نتائج تطابق البحث.'}</td></tr>
+              <tr><td colSpan={6} className="px-4 sm:px-8 py-12 sm:py-16 text-center text-slate-400 font-black text-base sm:text-lg">{projects.length === 0 ? 'لا توجد سجلات حالياً.' : 'لا توجد نتائج تطابق البحث.'}</td></tr>
             ) : filteredProjects.map(project => {
               const remaining = project.budget - (project.paidAmount || 0);
               const isPaidFull = remaining <= 0;
               return (
                 <tr id={`project-row-${project.id}`} key={project.id} className={`hover:bg-white/50 transition-all group ${project.status === ProjectStatus.OVERDUE ? 'bg-rose-500/5' : ''} ${notificationFocusProjectId === project.id ? 'ring-2 ring-indigo-400 ring-offset-2 rounded-lg' : ''}`}>
-                  <td className="px-8 py-5">
+                  <td className="px-4 sm:px-6 md:px-8 py-3 sm:py-5">
                     <div className="flex items-center gap-3">
                       {project.status === ProjectStatus.OVERDUE && <AlertTriangle size={16} className="text-rose-500 animate-pulse" />}
                       <div>
@@ -1224,9 +1226,9 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-5 font-black text-slate-700 text-base">{project.budget} د.إ</td>
-                  <td className="px-8 py-5">
-                    <div className="flex flex-col gap-1">
+                  <td className="px-4 sm:px-6 md:px-8 py-3 sm:py-5 font-black text-slate-700 text-sm sm:text-base">{project.budget} د.إ</td>
+                  <td className="px-4 sm:px-6 md:px-8 py-3 sm:py-5">
+                    <div className="flex flex-col gap-0.5 sm:gap-1">
                       <div className="flex items-center gap-2 text-emerald-600 font-black text-xs">
                         <CheckCircle size={12} /> المدفوع: {project.paidAmount || 0}
                       </div>
@@ -1236,17 +1238,17 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-5 text-slate-500 font-black">
+                  <td className="px-4 sm:px-6 md:px-8 py-3 sm:py-5 text-slate-500 font-black text-xs sm:text-base">
                     <span className={new Date(project.deadline) < new Date() && project.status !== ProjectStatus.DELIVERED ? 'text-rose-500 font-black flex items-center gap-1' : ''}>
                       {formatDeadline(project.deadline)}
                       {new Date(project.deadline) < new Date() && project.status !== ProjectStatus.DELIVERED && <Clock size={14} />}
                     </span>
                   </td>
-                  <td className="px-8 py-5">
+                  <td className="px-4 sm:px-6 md:px-8 py-3 sm:py-5">
                     <select 
                       value={project.status}
                       onChange={(e) => updateProjectStatus(project.id, e.target.value as ProjectStatus)}
-                      className={`px-4 py-2 rounded-xl text-xs font-black border-none outline-none cursor-pointer transition-all ${
+                      className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-black border-none outline-none cursor-pointer transition-all touch-manipulation min-h-[40px] ${
                         project.status === ProjectStatus.DELIVERED ? 'bg-emerald-50 text-emerald-600' :
                         project.status === ProjectStatus.OVERDUE ? 'bg-rose-100 text-rose-700 border border-rose-200' :
                         project.status === ProjectStatus.IN_PROGRESS ? 'bg-amber-50 text-amber-600' :
@@ -1259,21 +1261,24 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
                       <option value={ProjectStatus.DELIVERED}>تم التسليم</option>
                     </select>
                   </td>
-                  <td className="px-8 py-5 text-center">
-                    <div className="flex items-center justify-center gap-2">
+                  <td className="px-4 sm:px-6 md:px-8 py-3 sm:py-5 text-center">
+                    <div className="flex items-center justify-center gap-1 sm:gap-2">
                       <button 
+                        type="button"
                         onClick={() => {
                           setNewTransaction({ ...newTransaction, type: TransactionType.INCOME, projectId: project.id, amount: remaining > 0 ? remaining : 0, description: `دفعة مشروع: ${project.title}` });
                           setShowTransactionModal(true);
                         }}
-                        className="p-3 text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all"
+                        className="p-2.5 sm:p-3 text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
                         title="تسجيل دفعة جديدة"
                       >
                         <Banknote size={20} />
                       </button>
                       <button 
+                        type="button"
                         onClick={() => deleteProject(project.id)} 
-                        className="p-3 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                        className="p-2.5 sm:p-3 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
+                        title="حذف"
                       >
                         <Trash2 size={20} />
                       </button>
@@ -1289,13 +1294,13 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
   );
 
   const renderFinances = () => (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-scale-in">
-      <div className="lg:col-span-2 space-y-6">
-        <div className="glass-card p-8 rounded-3xl">
-          <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
-            <h2 className="text-2xl font-medium text-slate-800">سجل الحسابات</h2>
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="relative min-w-[220px] max-w-sm">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-8 animate-scale-in">
+      <div className="lg:col-span-2 space-y-4 md:space-y-6">
+        <div className="glass-card p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl">
+          <div className="flex flex-col sm:flex-row flex-wrap justify-between items-stretch sm:items-center gap-4 mb-5 md:mb-8">
+            <h2 className="text-xl sm:text-2xl font-medium text-slate-800">سجل الحسابات</h2>
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
+              <div className="relative min-w-0 w-full sm:min-w-[220px] sm:max-w-sm">
                 <Search size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                 <input
                   type="text"
@@ -1306,32 +1311,33 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
                 />
               </div>
               <button 
+                type="button"
                 onClick={() => setShowTransactionModal(true)}
-                className="text-indigo-600 font-medium text-sm bg-indigo-500/10 px-6 py-3 rounded-2xl hover:bg-indigo-500/20 transition-all border border-indigo-200/50 shrink-0"
+                className="text-indigo-600 font-medium text-sm bg-indigo-500/10 px-5 py-3 rounded-2xl hover:bg-indigo-500/20 transition-all border border-indigo-200/50 shrink-0 touch-manipulation min-h-[48px] w-full sm:w-auto"
               >
                 + إضافة عملية مالية
               </button>
             </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3 md:space-y-4">
             {filteredTransactions.length === 0 ? (
-               <div className="text-center py-20 text-slate-500 text-lg">{transactions.length === 0 ? 'لا توجد عمليات مسجلة.' : 'لا توجد نتائج تطابق البحث.'}</div>
+               <div className="text-center py-12 md:py-20 text-slate-500 text-base md:text-lg">{transactions.length === 0 ? 'لا توجد عمليات مسجلة.' : 'لا توجد نتائج تطابق البحث.'}</div>
             ) : filteredTransactions.map(t => {
               const linkedProject = projects.find(p => p.id === t.projectId);
               const CategoryIcon = getCategoryIcon(t.category);
               
               return (
-                <div key={t.id} className="flex items-center justify-between p-5 bg-white/50 rounded-2xl border border-white/60 hover:bg-white/70 transition-all group backdrop-blur-sm">
-                  <div className="flex items-center gap-5">
-                    <div className={`p-4 rounded-2xl ${t.type === TransactionType.INCOME ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>
-                      <CategoryIcon size={24} />
+                <div key={t.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-5 bg-white/50 rounded-xl sm:rounded-2xl border border-white/60 hover:bg-white/70 transition-all group backdrop-blur-sm">
+                  <div className="flex items-start gap-3 sm:gap-5 min-w-0">
+                    <div className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl shrink-0 ${t.type === TransactionType.INCOME ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>
+                      <CategoryIcon size={22} className="sm:w-6 sm:h-6" />
                     </div>
-                    <div>
-                      <h4 className="font-black text-slate-900 text-base">{t.description}</h4>
-                      <div className="flex flex-wrap items-center gap-3 mt-1 uppercase tracking-wider">
-                        <span className="text-[11px] text-slate-500 font-black">{t.date} • {t.category}</span>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-black text-slate-900 text-sm sm:text-base">{t.description}</h4>
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-1 uppercase tracking-wider">
+                        <span className="text-[10px] sm:text-[11px] text-slate-500 font-black">{t.date} • {t.category}</span>
                         {linkedProject && (
-                          <span className="flex items-center gap-1.5 text-[11px] font-black text-indigo-500 bg-indigo-50/50 px-2 py-0.5 rounded-lg border border-indigo-100">
+                          <span className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-black text-indigo-500 bg-indigo-50/50 px-2 py-0.5 rounded-lg border border-indigo-100">
                             <Briefcase size={10} />
                             {linkedProject.title}
                           </span>
@@ -1339,21 +1345,23 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className={`font-black text-xl ${t.type === TransactionType.INCOME ? 'text-emerald-600' : 'text-rose-600'}`}>
+                  <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
+                    <div className={`font-black text-lg sm:text-xl ${t.type === TransactionType.INCOME ? 'text-emerald-600' : 'text-rose-600'}`}>
                       {t.type === TransactionType.INCOME ? '+' : '-'} {t.amount} د.إ
                     </div>
-                    <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all">
+                    <div className="flex items-center gap-1 opacity-100 transition-all">
                       <button 
+                        type="button"
                         onClick={() => openEditTransaction(t)} 
-                        className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                        className="p-2.5 sm:p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
                         title="تعديل"
                       >
                         <Pencil size={20} />
                       </button>
                       <button 
+                        type="button"
                         onClick={() => handleDeleteTransaction(t.id)} 
-                        className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                        className="p-2.5 sm:p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
                         title="حذف"
                       >
                         <Trash2 size={20} />
@@ -1367,21 +1375,21 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
         </div>
       </div>
       
-      <div className="glass-card p-8 rounded-3xl h-fit sticky top-24">
-        <h3 className="font-medium text-slate-800 text-lg mb-6 pb-4 border-b border-white/50">خلاصة الخزينة</h3>
-        <div className="space-y-4">
-           <div className="flex justify-between items-center p-5 bg-emerald-500/10 rounded-2xl border border-emerald-200/50 backdrop-blur-sm">
-              <span className="text-[13px] font-medium text-emerald-700">الدخل المكتسب</span>
-              <span className="font-medium text-emerald-600 text-xl">{stats.totalIncome} د.إ</span>
+      <div className="glass-card p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl h-fit lg:sticky lg:top-24">
+        <h3 className="font-medium text-slate-800 text-base sm:text-lg mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/50">خلاصة الخزينة</h3>
+        <div className="space-y-3 sm:space-y-4">
+           <div className="flex justify-between items-center p-4 sm:p-5 bg-emerald-500/10 rounded-xl sm:rounded-2xl border border-emerald-200/50 backdrop-blur-sm">
+              <span className="text-xs sm:text-[13px] font-medium text-emerald-700">الدخل المكتسب</span>
+              <span className="font-medium text-emerald-600 text-base sm:text-xl">{stats.totalIncome} د.إ</span>
            </div>
-           <div className="flex justify-between items-center p-5 bg-rose-500/10 rounded-2xl border border-rose-200/50 backdrop-blur-sm">
-              <span className="text-[13px] font-medium text-rose-700">إجمالي التكاليف</span>
-              <span className="font-medium text-rose-600 text-xl">{stats.totalExpenses} د.إ</span>
+           <div className="flex justify-between items-center p-4 sm:p-5 bg-rose-500/10 rounded-xl sm:rounded-2xl border border-rose-200/50 backdrop-blur-sm">
+              <span className="text-xs sm:text-[13px] font-medium text-rose-700">إجمالي التكاليف</span>
+              <span className="font-medium text-rose-600 text-base sm:text-xl">{stats.totalExpenses} د.إ</span>
            </div>
-           <div className="pt-4 border-t border-white/50 mt-2">
+           <div className="pt-3 sm:pt-4 border-t border-white/50 mt-2">
               <div className="flex justify-between items-center px-2">
-                <span className="font-medium text-slate-600 text-base">الربح المتبقي</span>
-                <span className="text-2xl font-medium text-indigo-600">{stats.netProfit} د.إ</span>
+                <span className="font-medium text-slate-600 text-sm sm:text-base">الربح المتبقي</span>
+                <span className="text-xl sm:text-2xl font-medium text-indigo-600">{stats.netProfit} د.إ</span>
               </div>
            </div>
         </div>
@@ -1426,13 +1434,13 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
   const displayCondition = (c: string): string => mapConditionToArabic(c);
 
   const renderAssets = () => (
-    <div className="glass-card rounded-3xl overflow-hidden animate-slide-in-bottom">
-      <div className="p-8 border-b border-white/40 flex flex-wrap justify-between items-center gap-6">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-medium text-slate-800">قائمة الأصول — My Gears</h2>
-          <p className="text-slate-500 text-sm mt-1">معدات الاستوديو والأجهزة (النوع، الاسم، الكمية، الماركة، الحالة)</p>
-          <div className="mt-3 flex flex-wrap items-center gap-3">
-            <div className="relative min-w-[200px] max-w-md flex-1">
+    <div className="glass-card rounded-2xl sm:rounded-3xl overflow-hidden animate-slide-in-bottom">
+      <div className="p-4 sm:p-6 md:p-8 border-b border-white/40 flex flex-col sm:flex-row flex-wrap justify-between items-stretch gap-4 md:gap-6">
+        <div className="flex-1 min-w-0 space-y-2 sm:space-y-3">
+          <h2 className="text-xl sm:text-2xl font-medium text-slate-800">قائمة الأصول — My Gears</h2>
+          <p className="text-slate-500 text-xs sm:text-sm mt-1">معدات الاستوديو والأجهزة (النوع، الاسم، الكمية، الماركة، الحالة)</p>
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
+            <div className="relative min-w-0 w-full sm:min-w-[200px] sm:max-w-md flex-1">
               <Search size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               <input
                 type="text"
@@ -1446,7 +1454,7 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
             <select
               value={filterAssetCategory}
               onChange={(e) => setFilterAssetCategory(e.target.value)}
-              className="text-sm font-medium text-slate-700 bg-white/60 border border-slate-200/80 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-indigo-300 transition-all cursor-pointer"
+              className="text-sm font-medium text-slate-700 bg-white/60 border border-slate-200/80 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-indigo-300 transition-all cursor-pointer touch-manipulation min-h-[44px] sm:min-h-0"
             >
               <option value="all">كل الأنواع</option>
               {ASSET_TYPES.map(t => (
@@ -1456,7 +1464,7 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
             <select
               value={filterAssetCondition}
               onChange={(e) => setFilterAssetCondition(e.target.value)}
-              className="text-sm font-medium text-slate-700 bg-white/60 border border-slate-200/80 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-indigo-300 transition-all cursor-pointer"
+              className="text-sm font-medium text-slate-700 bg-white/60 border border-slate-200/80 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-indigo-300 transition-all cursor-pointer touch-manipulation min-h-[44px] sm:min-h-0"
             >
               <option value="all">كل الحالات</option>
               {ASSET_CONDITIONS.map(c => (
@@ -1470,80 +1478,80 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
           <button
             type="button"
             onClick={importMyGears}
-            className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-3 rounded-2xl text-sm font-medium hover:bg-emerald-700 transition-all active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-5 py-3.5 rounded-2xl text-sm font-medium hover:bg-emerald-700 transition-all active:scale-[0.98] touch-manipulation min-h-[48px]"
           >
-            <Package size={20} />
+            <Package size={20} className="shrink-0" />
             استيراد قائمة My Gears
           </button>
           <button
             type="button"
             onClick={() => { resetAssetForm(); setShowAssetModal(true); }}
-            className="flex items-center gap-3 bg-indigo-600 text-white px-7 py-3.5 rounded-2xl text-[15px] font-medium hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/25 active:scale-[0.98]"
+            className="flex items-center justify-center gap-3 bg-indigo-600 text-white px-6 py-3.5 rounded-2xl text-sm sm:text-[15px] font-medium hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/25 active:scale-[0.98] touch-manipulation min-h-[48px]"
           >
-            <Plus size={22} />
+            <Plus size={22} className="shrink-0" />
             إضافة أصل
           </button>
         </div>
         )}
       </div>
-      <div className="px-8 py-6 border-b border-white/40 bg-slate-50/50">
-        <div className="flex flex-wrap gap-6 items-center">
-          <div className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm min-w-[220px]">
-            <div className="p-2.5 rounded-xl bg-indigo-100">
-              <Package size={24} className="text-indigo-600" />
+      <div className="px-4 py-4 sm:px-6 sm:py-5 md:px-8 md:py-6 border-b border-white/40 bg-slate-50/50">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-6 items-stretch sm:items-center">
+          <div className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200/80 shadow-sm min-w-0 flex-1 sm:flex-initial sm:min-w-[200px]">
+            <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-indigo-100 shrink-0">
+              <Package size={22} className="sm:w-6 sm:h-6 text-indigo-600" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-slate-500 text-xs font-medium uppercase tracking-wider">إجمالي عدد المعدات</p>
-              <p className="text-2xl font-bold text-slate-800 mt-0.5">{totalEquipmentQuantity}</p>
-              <p className="text-slate-400 text-xs mt-0.5">مجموع الكمية (المرتجع والمفقود ويصل قريباً لا تُحسب)</p>
+              <p className="text-xl sm:text-2xl font-bold text-slate-800 mt-0.5">{totalEquipmentQuantity}</p>
+              <p className="text-slate-400 text-[11px] sm:text-xs mt-0.5">مجموع الكمية (المرتجع والمفقود ويصل قريباً لا تُحسب)</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm min-w-[220px]">
-            <div className="p-2.5 rounded-xl bg-emerald-100">
-              <Wallet size={24} className="text-emerald-600" />
+          <div className="flex items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200/80 shadow-sm min-w-0 flex-1 sm:flex-initial sm:min-w-[200px]">
+            <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-emerald-100 shrink-0">
+              <Wallet size={22} className="sm:w-6 sm:h-6 text-emerald-600" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-slate-500 text-xs font-medium uppercase tracking-wider">إجمالي القيمة المسجّلة</p>
-              <p className="text-2xl font-bold text-slate-800 mt-0.5">{totalAssetsValue} د.إ</p>
-              <p className="text-slate-400 text-xs mt-0.5">قيمة الأصول بالدرهم</p>
+              <p className="text-xl sm:text-2xl font-bold text-slate-800 mt-0.5">{totalAssetsValue} د.إ</p>
+              <p className="text-slate-400 text-[11px] sm:text-xs mt-0.5">قيمة الأصول بالدرهم</p>
             </div>
           </div>
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-right">
-          <thead className="bg-white/50 text-slate-500 text-[13px] uppercase tracking-wider font-medium backdrop-blur-sm">
+      <div className="overflow-x-auto -mx-2 sm:mx-0">
+        <table className="w-full text-right min-w-[640px]">
+          <thead className="bg-white/50 text-slate-500 text-xs sm:text-[13px] uppercase tracking-wider font-medium backdrop-blur-sm">
             <tr>
-              <th className="px-6 py-5">النوع</th>
-              <th className="px-6 py-5">الاسم</th>
-              <th className="px-6 py-5 text-center">الكمية</th>
-              <th className="px-6 py-5">الماركة</th>
-              <th className="px-6 py-5">الحالة</th>
-              <th className="px-6 py-5">القيمة (د.إ)</th>
-              <th className="px-6 py-5">تاريخ الشراء</th>
-              {!isStaff && <th className="px-6 py-5 text-center">أدوات</th>}
+              <th className="px-3 py-3 sm:px-6 sm:py-5">النوع</th>
+              <th className="px-3 py-3 sm:px-6 sm:py-5">الاسم</th>
+              <th className="px-3 py-3 sm:px-6 sm:py-5 text-center">الكمية</th>
+              <th className="px-3 py-3 sm:px-6 sm:py-5">الماركة</th>
+              <th className="px-3 py-3 sm:px-6 sm:py-5">الحالة</th>
+              <th className="px-3 py-3 sm:px-6 sm:py-5">القيمة (د.إ)</th>
+              <th className="px-3 py-3 sm:px-6 sm:py-5">تاريخ الشراء</th>
+              {!isStaff && <th className="px-3 py-3 sm:px-6 sm:py-5 text-center">أدوات</th>}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 text-[15px]">
+          <tbody className="divide-y divide-slate-100 text-sm sm:text-[15px]">
             {filteredAssets.length === 0 ? (
               <tr>
-                <td colSpan={isStaff ? 7 : 8} className="px-8 py-16 text-center text-slate-400 font-medium text-lg">{assets.length === 0 ? 'لا توجد أصول مسجّلة.' : 'لا توجد نتائج تطابق البحث.'}</td>
+                <td colSpan={isStaff ? 7 : 8} className="px-4 sm:px-8 py-12 sm:py-16 text-center text-slate-400 font-medium text-base sm:text-lg">{assets.length === 0 ? 'لا توجد أصول مسجّلة.' : 'لا توجد نتائج تطابق البحث.'}</td>
               </tr>
             ) : (
               filteredAssets.map((asset) => (
                 <tr key={asset.id} className={`transition-all group ${getAssetRowBg(asset.condition ?? '') || 'hover:bg-white/50'}`}>
-                  <td className="px-6 py-5 text-slate-600">{asset.category}</td>
-                  <td className="px-6 py-5 font-medium text-slate-900">{asset.name}</td>
-                  <td className="px-6 py-5 text-center font-medium text-slate-700">{asset.quantity ?? 1}</td>
-                  <td className="px-6 py-5 text-slate-600">{asset.brand ?? '—'}</td>
-                  <td className="px-6 py-5 font-medium text-slate-600">{displayCondition(asset.condition ?? '') || '—'}</td>
-                  <td className="px-6 py-5 font-medium text-slate-800">{asset.value ? `${asset.value} د.إ` : '—'}</td>
-                  <td className="px-6 py-5 text-slate-500">{asset.purchaseDate ? formatAssetDate(asset.purchaseDate) : '—'}</td>
+                  <td className="px-3 py-3 sm:px-6 sm:py-5 text-slate-600">{asset.category}</td>
+                  <td className="px-3 py-3 sm:px-6 sm:py-5 font-medium text-slate-900">{asset.name}</td>
+                  <td className="px-3 py-3 sm:px-6 sm:py-5 text-center font-medium text-slate-700">{asset.quantity ?? 1}</td>
+                  <td className="px-3 py-3 sm:px-6 sm:py-5 text-slate-600">{asset.brand ?? '—'}</td>
+                  <td className="px-3 py-3 sm:px-6 sm:py-5 font-medium text-slate-600">{displayCondition(asset.condition ?? '') || '—'}</td>
+                  <td className="px-3 py-3 sm:px-6 sm:py-5 font-medium text-slate-800">{asset.value ? `${asset.value} د.إ` : '—'}</td>
+                  <td className="px-3 py-3 sm:px-6 sm:py-5 text-slate-500">{asset.purchaseDate ? formatAssetDate(asset.purchaseDate) : '—'}</td>
                   {!isStaff && (
-                  <td className="px-6 py-5 text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <button type="button" onClick={() => openEditAsset(asset)} className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all" title="تعديل"><Pencil size={20} /></button>
-                      <button type="button" onClick={() => setAssetToDelete(asset.id)} className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="حذف"><Trash2 size={20} /></button>
+                  <td className="px-3 py-3 sm:px-6 sm:py-5 text-center">
+                    <div className="flex items-center justify-center gap-1 sm:gap-2">
+                      <button type="button" onClick={() => openEditAsset(asset)} className="p-2.5 sm:p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center" title="تعديل"><Pencil size={20} /></button>
+                      <button type="button" onClick={() => setAssetToDelete(asset.id)} className="p-2.5 sm:p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center" title="حذف"><Trash2 size={20} /></button>
                     </div>
                   </td>
                   )}
@@ -1559,31 +1567,24 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
   return (
     <div className="min-h-screen">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={onLogout} studioName={userSettings.studioName} studioImageUrl={userSettings.studioImageUrl || undefined} hideSettings={isStaff} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} onLogout={onLogout} hideSettings={isStaff} />
 
-      <main className="mr-0 md:mr-64 p-4 sm:p-6 md:p-8 lg:p-12 transition-all duration-300 pb-24 md:pb-12">
-        <header className="glass-header relative z-50 flex flex-wrap justify-between items-start gap-4 mb-6 md:mb-12 rounded-2xl px-4 sm:px-6 md:px-8 py-4 md:py-6 -mx-2 lg:-mx-4">
+      <main className="mr-0 md:mr-64 p-3 sm:p-6 md:p-8 lg:p-12 transition-[margin,padding] duration-300 pb-28 md:pb-12">
+        <header className="glass-header relative z-50 flex flex-wrap justify-between items-start gap-4 mb-4 md:mb-12 rounded-[1.25rem] md:rounded-2xl px-4 sm:px-6 md:px-8 py-4 md:py-6 -mx-1 md:-mx-2 lg:-mx-4 overflow-visible">
           <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
-            <button
-              type="button"
-              onClick={() => setSidebarOpen(true)}
-              className="md:hidden p-3 glass-card rounded-2xl text-slate-600 hover:text-indigo-600 transition-all touch-manipulation min-h-[48px] min-w-[48px] flex items-center justify-center"
-              aria-label="فتح القائمة"
-            >
-              <Menu size={24} />
-            </button>
             <div className="animate-slide-in-right flex flex-col gap-2 md:gap-4 min-w-0 flex-1">
               {userSettings.studioImageUrl && activeTab !== 'settings' && (
                 <img src={userSettings.studioImageUrl} alt="" className="w-12 h-12 md:w-16 md:h-16 rounded-2xl object-cover border-2 border-white/60 shadow-md shrink-0" />
               )}
-              <div className="min-w-0">
-                <h2 className="text-2xl sm:text-3xl md:text-[42px] font-black text-slate-900 tracking-tight leading-tight">
+              <div className="min-w-0 overflow-visible">
+                <h2 className="text-2xl sm:text-3xl md:text-[42px] font-black text-slate-900 tracking-tight leading-snug md:leading-normal py-0.5 md:py-1 break-words">
                 {activeTab === 'dashboard' && userSettings.studioName}
                 {activeTab === 'projects' && 'المشاريع'}
                 {activeTab === 'finances' && 'المالية والحسابات'}
                 {activeTab === 'assets' && 'الأصول'}
                 {activeTab === 'settings' && 'الإعدادات والتحكم'}
               </h2>
-              <p className="text-slate-500 mt-2 md:mt-4 font-black text-sm sm:text-base md:text-xl opacity-80 min-h-[2rem] md:min-h-[2.5rem] flex items-center">
+              <p className="text-slate-500 mt-2 md:mt-4 font-black text-sm sm:text-base md:text-xl opacity-80 min-h-[2rem] md:min-h-[2.5rem] flex items-center leading-relaxed">
                 {activeTab === 'dashboard' && (
                   <>
                     <span>{WELCOME_TEXT.slice(0, welcomeTypingIndex)}</span>
@@ -1598,6 +1599,7 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
                 {activeTab === 'settings' && 'خصص واجهتك وأدر بياناتك بكل سهولة.'}
               </p>
             </div>
+          </div>
           </div>
           
           <div className="relative z-[100] flex items-center gap-2 sm:gap-4 shrink-0">
@@ -1628,7 +1630,7 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
                 <div className="glass-dropdown absolute left-0 mt-3 w-80 max-w-[calc(100vw-2rem)] rounded-2xl z-[9999] overflow-hidden animate-scale-in top-full shadow-2xl ring-2 ring-white/50">
                 <div className="p-5 border-b border-white/40 flex justify-between items-center">
                   <h4 className="font-medium text-slate-800">تنبيهات المواعيد</h4>
-                  <button onClick={() => setShowNotifications(false)}><X size={16} className="text-slate-400" /></button>
+                  <button onClick={() => setShowNotifications(false)} className="shrink-0 p-1"><X size={16} className="text-slate-400" /></button>
                 </div>
                 <div className="max-h-96 overflow-y-auto custom-scrollbar">
                   {notifications.length === 0 ? (
@@ -1664,23 +1666,23 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
         {activeTab === 'settings' && !isStaff && (
           <div className="max-w-4xl space-y-8 animate-slide-in-top pb-20">
             <div className="glass-card rounded-3xl overflow-hidden">
-              <div className="p-8 border-b border-white/40 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-indigo-100 text-indigo-600 rounded-2xl">
-                    <User size={24} />
+              <div className="p-4 sm:p-6 md:p-8 border-b border-white/40 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                  <div className="p-2.5 sm:p-3 bg-indigo-100 text-indigo-600 rounded-xl sm:rounded-2xl shrink-0">
+                    <User size={22} className="sm:w-6 sm:h-6" />
                   </div>
-                  <h2 className="text-xl font-black text-slate-900 tracking-tight">إعدادات الهوية والمظهر</h2>
+                  <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight leading-snug">إعدادات الهوية والمظهر</h2>
                 </div>
                 <button 
                   onClick={handleSaveSettings}
                   disabled={isSavingSettings}
-                  className="flex items-center gap-2 bg-indigo-600 text-white px-8 py-3.5 rounded-2xl font-black hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95 disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3.5 rounded-2xl font-black hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95 disabled:opacity-50 touch-manipulation min-h-[48px] w-full sm:w-auto"
                 >
-                  {isSavingSettings ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+                  {isSavingSettings ? <Loader2 size={18} className="animate-spin shrink-0" /> : <Save size={18} className="shrink-0" />}
                   حفظ التغييرات
                 </button>
               </div>
-              <div className="p-10 space-y-8">
+              <div className="p-4 sm:p-6 md:p-10 space-y-6 sm:space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2">
                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest mr-1">اسم الاستوديو</label>
@@ -1846,9 +1848,9 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
                           setToast({ message: result.error ?? 'فشل الإضافة', type: 'error' });
                         }
                       }}
-                      className="flex items-center gap-2 bg-indigo-600 text-white px-8 py-3.5 rounded-2xl font-black hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95 disabled:opacity-50"
+                      className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3.5 rounded-2xl font-black hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95 disabled:opacity-50 touch-manipulation min-h-[48px]"
                     >
-                      {isAddingUser ? <Loader2 size={18} className="animate-spin" /> : <UserPlus size={18} />}
+                      {isAddingUser ? <Loader2 size={18} className="animate-spin shrink-0" /> : <UserPlus size={18} className="shrink-0" />}
                       إضافة مستخدم جديد
                     </button>
                   </div>
@@ -1993,16 +1995,16 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
                   <p className="text-slate-500 text-sm mt-0.5">تصدير أو استيراد نسخة كاملة (بيانات + ملحقات) في ملف واحد</p>
                 </div>
               </div>
-              <div className="p-8 flex flex-wrap gap-4 items-center">
+              <div className="p-4 sm:p-6 md:p-8 flex flex-wrap gap-3 sm:gap-4 items-center">
                 <button
                   type="button"
                   onClick={() => localDatabase.exportFullBackup()}
-                  className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-3.5 rounded-2xl font-medium hover:bg-emerald-700 transition-all shadow-md"
+                  className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-5 py-3.5 rounded-2xl font-medium hover:bg-emerald-700 transition-all shadow-md touch-manipulation min-h-[48px]"
                 >
-                  <Database size={20} />
+                  <Database size={20} className="shrink-0" />
                   تصدير نسخة كاملة (بيانات + ملحقات)
                 </button>
-                <label className="flex items-center gap-2 bg-slate-100 text-slate-700 px-6 py-3.5 rounded-2xl font-medium hover:bg-slate-200 transition-all cursor-pointer border border-slate-200">
+                <label className="flex items-center justify-center gap-2 bg-slate-100 text-slate-700 px-5 py-3.5 rounded-2xl font-medium hover:bg-slate-200 transition-all cursor-pointer border border-slate-200 touch-manipulation min-h-[48px] min-w-0">
                   <input
                     type="file"
                     accept=".json,application/json"
@@ -2025,9 +2027,9 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
               </div>
             </div>
 
-            <div className="glass-card p-10 rounded-3xl border-rose-200/50 flex justify-between items-center bg-rose-500/5">
-               <div><h3 className="font-medium text-rose-900 text-xl">إعادة ضبط المصنع</h3><p className="text-rose-600 text-sm mt-1">سيتم حذف كافة البيانات المحلية والملحقات نهائياً.</p></div>
-               <button onClick={() => { setPendingDelete({ type: 'clearAll' }); setShowAdminAuthModal(true); }} className="bg-rose-600 text-white px-8 py-4 rounded-2xl font-medium hover:bg-rose-700 transition-all shadow-lg">حذف كل البيانات</button>
+            <div className="glass-card p-4 sm:p-6 md:p-10 rounded-2xl sm:rounded-3xl border-rose-200/50 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-rose-500/5">
+               <div className="min-w-0"><h3 className="font-medium text-rose-900 text-lg sm:text-xl leading-snug">إعادة ضبط المصنع</h3><p className="text-rose-600 text-sm mt-1 leading-relaxed">سيتم حذف كافة البيانات المحلية والملحقات نهائياً.</p></div>
+               <button onClick={() => { setPendingDelete({ type: 'clearAll' }); setShowAdminAuthModal(true); }} className="bg-rose-600 text-white px-6 py-3.5 rounded-2xl font-medium hover:bg-rose-700 transition-all shadow-lg touch-manipulation min-h-[48px] shrink-0">حذف كل البيانات</button>
             </div>
           </div>
         )}
@@ -2431,22 +2433,22 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
       )}
 
       {showReportModal && reportModalData && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in" onClick={(e) => e.target === e.currentTarget && setShowReportModal(false)}>
-          <div className="glass-modal rounded-[28px] w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-in" onClick={(e) => e.stopPropagation()}>
-            <div className="p-6 pb-4 flex justify-between items-center border-b border-white/40 shrink-0">
-              <h3 className="text-xl text-slate-800 font-medium">معاينة التقرير</h3>
-              <button onClick={() => setShowReportModal(false)} className="text-slate-400 hover:text-slate-600 hover:bg-white/50 p-2 rounded-xl transition-all shrink-0" aria-label="إغلاق"><X size={20} /></button>
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-3 sm:p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in overflow-y-auto" onClick={(e) => e.target === e.currentTarget && setShowReportModal(false)}>
+          <div className="glass-modal rounded-2xl sm:rounded-[28px] w-full max-w-[calc(100vw-1.5rem)] sm:max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-in my-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="p-4 sm:p-6 pb-4 flex justify-between items-center border-b border-white/40 shrink-0">
+              <h3 className="text-lg sm:text-xl text-slate-800 font-medium">معاينة التقرير</h3>
+              <button onClick={() => setShowReportModal(false)} className="text-slate-400 hover:text-slate-600 hover:bg-white/50 p-2.5 rounded-xl transition-all shrink-0 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="إغلاق"><X size={20} /></button>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 bg-slate-50/50 custom-scrollbar" dir="rtl">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50/50 custom-scrollbar min-h-0" dir="rtl">
               <style>{reportModalData.reportStyles}</style>
-              <div className="report-wrap bg-white rounded-2xl p-6 shadow-sm" dangerouslySetInnerHTML={{ __html: reportModalData.bodyContent }} />
+              <div className="report-wrap bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm text-sm sm:text-base" dangerouslySetInnerHTML={{ __html: reportModalData.bodyContent }} />
             </div>
-            <div className="p-6 pt-4 flex gap-3 border-t border-white/40 shrink-0">
-              <button type="button" onClick={reportPrint} className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 text-white py-3.5 rounded-2xl font-medium hover:bg-indigo-700 transition-all">
+            <div className="p-4 sm:p-6 pt-4 flex flex-col sm:flex-row gap-3 border-t border-white/40 shrink-0">
+              <button type="button" onClick={reportPrint} className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 text-white py-3.5 rounded-xl sm:rounded-2xl font-medium hover:bg-indigo-700 transition-all touch-manipulation min-h-[48px]">
                 <Printer size={20} />
                 طباعة
               </button>
-              <button type="button" onClick={reportDownload} className="flex-1 flex items-center justify-center gap-2 bg-emerald-600 text-white py-3.5 rounded-2xl font-medium hover:bg-emerald-700 transition-all">
+              <button type="button" onClick={reportDownload} className="flex-1 flex items-center justify-center gap-2 bg-emerald-600 text-white py-3.5 rounded-xl sm:rounded-2xl font-medium hover:bg-emerald-700 transition-all touch-manipulation min-h-[48px]">
                 <Download size={20} />
                 تحميل
               </button>
@@ -2468,6 +2470,9 @@ const App: React.FC<AppProps> = ({ onLogout, storage, authUser }) => {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
+          padding-top: 0.15em;
+          padding-bottom: 0.15em;
+          line-height: 1.35;
         }
 
         /* Utility overrides to enforce primary color theme */
